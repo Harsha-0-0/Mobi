@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selection: TabSelection = .home  // Default to .home
+    @State private var selection: TabSelection = .home
     
     init(selection: TabSelection = .home) {
         _selection = State(initialValue: selection)
@@ -16,15 +16,15 @@ struct ContentView: View {
     
     var body: some View {
         TabView(selection: $selection) {
-            Tab("Home", systemImage: "house", value: TabSelection.home) {
+            Tab("Home", systemImage: "house", value: .home) {
                 HomeView()
             }
 
-            Tab("Log", systemImage: "book", value: TabSelection.log) {
+            Tab("Log", systemImage: "book", value: .log) {
                 LogView()
             }
 
-            Tab("Plan", systemImage: "calendar", value: TabSelection.plan) {
+            Tab("Plan", systemImage: "calendar", value: .plan) {
                 PlanView()
             }
         }

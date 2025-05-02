@@ -34,5 +34,5 @@ struct PlanView: View {
 }
 
 #Preview {
-    ContentView(selection: TabSelection.plan)
+    ContentView(selection: .plan)
 }

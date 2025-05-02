@@ -16,5 +16,5 @@ struct HomeView: View {
 }
 
 #Preview {
-    HomeView()
+    ContentView(selection: .home)
 }

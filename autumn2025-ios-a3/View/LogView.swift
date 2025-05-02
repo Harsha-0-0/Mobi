@@ -16,5 +16,5 @@ struct LogView: View {
 }
 
 #Preview {
-    LogView()
+    ContentView(selection: .log)
 }
