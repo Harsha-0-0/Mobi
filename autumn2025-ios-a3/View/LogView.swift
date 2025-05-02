@@ -1,5 +1,5 @@
 //
-//  SessionView.swift
+//  LogView.swift
 //  autumn2025-ios-a3
 //
 //  Created by Saab Kovavinthaweewat on 1/5/2025.

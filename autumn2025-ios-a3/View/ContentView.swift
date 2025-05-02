@@ -8,31 +8,25 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab: FooterTab = .home
-    @State private var path = NavigationPath()
-
+    @State private var selection: TabSelection = .home  // Default to .home
+    
+    init(selection: TabSelection = .home) {
+        _selection = State(initialValue: selection)
+    }
+    
     var body: some View {
-        NavigationStack(path: $path) {
-            VStack(spacing: 0) {
-                Group {
-                    switch selectedTab {
-                    case .home:
-                        HomeView()
-                    case .log:
-                        LogView()
-                    case .plan:
-                        PlanView()
-                    }
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-
-                FooterView(activeTab: selectedTab) { newTab in
-                    if newTab != selectedTab {
-                        selectedTab = newTab
-                    }
-                }
+        TabView(selection: $selection) {
+            Tab("Home", systemImage: "house", value: TabSelection.home) {
+                HomeView()
             }
-            .ignoresSafeArea(edges: .bottom)
+
+            Tab("Log", systemImage: "book", value: TabSelection.log) {
+                LogView()
+            }
+
+            Tab("Plan", systemImage: "calendar", value: TabSelection.plan) {
+                PlanView()
+            }
         }
     }
 }
@@ -40,3 +34,4 @@ struct ContentView: View {
 #Preview {
     ContentView()
 }
+
