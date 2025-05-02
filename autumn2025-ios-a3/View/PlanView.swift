@@ -37,13 +37,25 @@ struct PlanView: View {
                                     .foregroundColor(.white)
                                     .padding(.horizontal, 10)
                                     .padding(.vertical, 4)
-                                    .background(Capsule().fill(Color.blue))
+                                    .background(Capsule().fill(Color.blueButton))
                                     .frame(minWidth: 0, maxWidth: 120)
                                     .lineLimit(1)
                             }
                         }
                         .padding(8)
                     }
+                }
+                
+                NavigationLink(destination: PlanNewSessionView()) {
+                    Text("Create a new session")
+                        .font(.subheadline)
+                        .bold()
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 100)
+                        .padding(.vertical, 8)
+                        .background(Capsule().fill(Color.blueButton))
+                        .frame(maxWidth: .infinity)
+                        .padding(.top, 16)
                 }
                 
                 Spacer()
