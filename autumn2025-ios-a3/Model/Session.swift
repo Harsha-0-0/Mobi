@@ -21,4 +21,9 @@ struct Session: Codable {
         self.endDate = endDate
         self.exercises = exercises
     }
+    
+    var isActive: Bool {
+        let today = Date()
+        return startDate <= today && today <= endDate
+    }
 }

@@ -6,30 +6,52 @@
 //
 
 import SwiftUI
-import SwiftUI
 
 struct PlanView: View {
+    private let sessions: [Session] = SessionRepository().listAll()
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
-            Text("This is Plan view.")
-                .font(.title2)
-                .padding(.top)
-
-            GroupBox(label:
-                Label("Session", systemImage: "doc.plaintext")
-                    .font(.headline)
-            ) {
-                ScrollView(.vertical, showsIndicators: true) {
-                    Text("Exercise")
-                    .font(.footnote)
-                    .padding(8)
+        NavigationView {
+            VStack(alignment: .leading, spacing: 12) {
+                ForEach(sessions, id: \.id) { session in
+                    GroupBox(label:
+                        Label(session.name, systemImage: "doc.plaintext")
+                            .font(.headline)
+                            .foregroundColor(.black)
+                    ) {
+                        HStack {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("\(session.exercises.count) exercise\(session.exercises.count > 1 ? "s" : "")")
+                                    .font(.footnote)
+                                    .foregroundColor(.gray)
+                                Text("\(FormatterUtil.longDateFormatter.string(from: session.startDate)) - \(FormatterUtil.longDateFormatter.string(from: session.endDate))")
+                                    .font(.footnote)
+                                    .foregroundColor(.gray)
+                            }
+                            
+                            Spacer()
+                            
+                            NavigationLink(destination: PlanSessionView(sessionId: session.id)) {
+                                Text("View & Edit")
+                                    .font(.subheadline)
+                                    .bold()
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 10)
+                                    .padding(.vertical, 4)
+                                    .background(Capsule().fill(Color.blue))
+                                    .frame(minWidth: 0, maxWidth: 120)
+                                    .lineLimit(1)
+                            }
+                        }
+                        .padding(8)
+                    }
                 }
-                .frame(height: 80)
+                
+                Spacer()
             }
-
-            Spacer()
+            .padding()
+            .navigationTitle("Exercise Plan")
+            .navigationBarTitleDisplayMode(.inline)
         }
-        .padding()
     }
 }
 
