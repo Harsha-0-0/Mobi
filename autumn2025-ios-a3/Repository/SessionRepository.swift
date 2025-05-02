@@ -24,6 +24,14 @@ class SessionRepository {
             userDefaults.set(data, forKey: key)
         }
     }
+    
+    func update(_ session: Session) {
+        var sessions = listAll()
+        if let index = sessions.firstIndex(where: { $0.id == session.id }) {
+            sessions[index] = session
+            saveAll(sessions)
+        }
+    }
 
     func listAll() -> [Session] {
         guard let data = userDefaults.data(forKey: key),

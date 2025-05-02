@@ -8,14 +8,32 @@
 import SwiftUI
 
 struct ContentView: View {
+    @State private var selectedTab: FooterTab = .home
+    @State private var path = NavigationPath()
+
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        NavigationStack(path: $path) {
+            VStack(spacing: 0) {
+                Group {
+                    switch selectedTab {
+                    case .home:
+                        HomeView()
+                    case .log:
+                        LogView()
+                    case .plan:
+                        PlanView()
+                    }
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+
+                FooterView(activeTab: selectedTab) { newTab in
+                    if newTab != selectedTab {
+                        selectedTab = newTab
+                    }
+                }
+            }
+            .ignoresSafeArea(edges: .bottom)
         }
-        .padding()
     }
 }
 
