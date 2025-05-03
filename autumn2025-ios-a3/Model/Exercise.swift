@@ -7,11 +7,6 @@
 
 import Foundation
 
-enum ExerciseType: Codable {
-    case reps
-    case time
-}
-
 struct Exercise: Codable {
     let id: UUID
     var name: String

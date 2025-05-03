@@ -44,33 +44,58 @@ struct PlanView: View {
                                             .font(.headline)
                                             .foregroundColor(.black)
                                     ) {
-                                        HStack {
-                                            VStack(alignment: .leading, spacing: 4) {
-                                                Text("\(session.exercises.count) exercise\(session.exercises.count > 1 ? "s" : "")")
-                                                    .font(.footnote)
-                                                    .foregroundColor(.gray)
-                                                Text("\(FormatterUtil.longDateFormatter.string(from: session.startDate)) - \(FormatterUtil.longDateFormatter.string(from: session.endDate))")
-                                                    .font(.footnote)
-                                                    .foregroundColor(.gray)
-                                            }
+                                        VStack(alignment: .leading, spacing: 8) {
+                                            HStack {
+                                                VStack(alignment: .leading, spacing: 4) {
+                                                    Text("\(session.exercises.count) exercise\(session.exercises.count > 1 ? "s" : "")")
+                                                        .font(.footnote)
+                                                        .foregroundColor(.gray)
+                                                    Text("\(FormatterUtil.longDateFormatter.string(from: session.startDate)) - \(FormatterUtil.longDateFormatter.string(from: session.endDate))")
+                                                        .font(.footnote)
+                                                        .foregroundColor(.gray)
+                                                }
 
-                                            Spacer()
+                                                Spacer()
+                                                
+                                                VStack(alignment: .trailing, spacing: 6) {
+                                                    NavigationLink(destination: PlanSessionView(sessionId: session.id)) {
+                                                        Text("View & Edit")
+                                                            .font(.subheadline)
+                                                            .bold()
+                                                            .foregroundColor(.white)
+                                                            .padding(.horizontal, 10)
+                                                            .padding(.vertical, 4)
+                                                            .frame(width: 110)
+                                                            .background(Capsule().fill(Color.blueButton))
+                                                            .frame(minWidth: 0, maxWidth: 120)
+                                                            .lineLimit(1)
+                                                    }
 
-                                            NavigationLink(destination: PlanSessionView(sessionId: session.id)) {
-                                                Text("View & Edit")
-                                                    .font(.subheadline)
-                                                    .bold()
-                                                    .foregroundColor(.white)
-                                                    .padding(.horizontal, 10)
-                                                    .padding(.vertical, 4)
-                                                    .background(Capsule().fill(Color.blueButton))
-                                                    .frame(minWidth: 0, maxWidth: 120)
-                                                    .lineLimit(1)
+                                                    Button(action: {
+                                                        SessionRepository().deleteById(sessionId: session.id)
+                                                        sessions = SessionRepository().listAll()
+                                                    }) {
+                                                        Text("Delete")
+                                                            .font(.subheadline)
+                                                            .bold()
+                                                            .foregroundColor(.white)
+                                                            .padding(.horizontal, 10)
+                                                            .padding(.vertical, 4)
+                                                            .frame(width: 110)
+                                                            .background(Capsule().fill(Color.red))
+                                                            .frame(minWidth: 0, maxWidth: 120)
+                                                            .lineLimit(1)
+                                                    }
+
+                                                }
+
+
                                             }
                                         }
                                         .padding(8)
                                     }
                                 }
+
                             }
                         }
 
