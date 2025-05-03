@@ -26,4 +26,5 @@ struct Session: Codable {
         let today = Date()
         return startDate <= today && today <= endDate
     }
+    
 }

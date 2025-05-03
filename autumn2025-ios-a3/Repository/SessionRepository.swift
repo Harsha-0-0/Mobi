@@ -12,10 +12,16 @@ class SessionRepository {
     private let key = "sessions"
 
     func save(_ session: Session) {
+        print("save")
         var sessions = listAll()
         sessions.append(session)
-        if let data = try? JSONEncoder().encode(sessions) {
+        
+        do {
+            let data = try JSONEncoder().encode(sessions)
             userDefaults.set(data, forKey: key)
+            print("Session saved successfully: \(session)") // Debug statement
+        } catch {
+            print("Failed to encode sessions: \(error)")
         }
     }
     
@@ -39,6 +45,11 @@ class SessionRepository {
             return []
         }
         return sessions
+    }
+    
+    func deleteAll() {
+        userDefaults.removeObject(forKey: key)
+        print("All sessions deleted successfully.") // Debug statement
     }
 }
 
