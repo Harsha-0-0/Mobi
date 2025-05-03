@@ -9,10 +9,10 @@ import Foundation
 
 struct Session: Codable {
     let id: UUID
-    let name: String
-    let startDate: Date
-    let endDate: Date
-    let exercises: [Exercise]
+    var name: String
+    var startDate: Date
+    var endDate: Date
+    var exercises: [Exercise]
 
     init(name: String, startDate: Date, endDate: Date, exercises: [Exercise]) {
         self.id = UUID()

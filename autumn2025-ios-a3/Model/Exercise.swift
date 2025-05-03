@@ -14,12 +14,12 @@ enum ExerciseType: Codable {
 
 struct Exercise: Codable {
     let id: UUID
-    let name: String
-    let type: ExerciseType
-    let count: Int
-    let sets: Int
-    let guidanceImageURL: String
-    let instruction: String
+    var name: String
+    var type: ExerciseType
+    var count: Int
+    var sets: Int
+    var guidanceImageURL: String
+    var instruction: String
 
     init(name: String, description: String, type: ExerciseType, count:Int, sets: Int, guidanceImageURL: String, instruction: String) {
         self.id = UUID()

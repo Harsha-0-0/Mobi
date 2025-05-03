@@ -11,6 +11,10 @@ class SessionRepository {
     private let userDefaults = UserDefaults.standard
     private let key = "sessions"
 
+    func getById(by id: UUID) -> Session? {
+        return listAll().first(where: { $0.id == id })
+    }
+
     func save(_ session: Session) {
         print("save")
         var sessions = listAll()
