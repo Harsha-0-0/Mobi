@@ -1,5 +1,5 @@
 //
-//  PlanSessionView.swift
+//  PlanNewSessionView.swift
 //  autumn2025-ios-a3
 //
 //  Created by Saab Kovavinthaweewat on 2/5/2025.
@@ -53,13 +53,15 @@ struct PlanNewSessionView: View {
                 }
 
                 if isStartPickerVisible {
-                    DatePicker(
-                        "Select Start Date",
-                        selection: $startDate,
-                        displayedComponents: [.date]
-                    )
-                    .datePickerStyle(.graphical)
-                    .padding(.top, 5)
+                    DatePicker("Select Start Date", selection: $startDate, displayedComponents: [.date])
+                        .datePickerStyle(.graphical)
+                        .onChange(of: startDate) { oldValue, newValue in
+                            startDate = newValue
+                            withAnimation {
+                                isStartPickerVisible = false
+                            }
+                        }
+                        .padding(.top, 5)
                 }
             }
 
@@ -87,13 +89,15 @@ struct PlanNewSessionView: View {
                 }
 
                 if isEndPickerVisible {
-                    DatePicker(
-                        "Select End Date",
-                        selection: $endDate,
-                        displayedComponents: [.date]
-                    )
-                    .datePickerStyle(.graphical)
-                    .padding(.top, 5)
+                    DatePicker("Select End Date", selection: $endDate, displayedComponents: [.date])
+                        .datePickerStyle(.graphical)
+                        .onChange(of: endDate) { oldValue, newValue in
+                            endDate = newValue
+                            withAnimation {
+                                isEndPickerVisible = false
+                            }
+                        }
+                        .padding(.top, 5)
                 }
             }
 
@@ -117,11 +121,9 @@ struct PlanNewSessionView: View {
             Spacer()
         }
         .padding()
-        .navigationTitle("Create New Session")
-        .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 #Preview {
-    PlanNewSessionView()
+    ContentView(selection: .plan)
 }
