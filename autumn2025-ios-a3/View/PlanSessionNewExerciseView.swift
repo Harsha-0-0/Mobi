@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct PlanNewExerciseView: View {
+struct PlanSessionNewExerciseView: View {
     let sessionId: UUID
 
     @Environment(\.presentationMode) var presentationMode

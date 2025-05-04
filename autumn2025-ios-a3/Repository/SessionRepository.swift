@@ -69,5 +69,15 @@ class SessionRepository {
         session.exercises.append(exercise)
         update(session)
     }
+    
+    func deleteExercise(sessionId: UUID, exerciseId: UUID) {
+        guard var session = getById(by: sessionId) else {
+            print("Session not found")
+            return
+        }
+        
+        session.exercises.removeAll { $0.id == exerciseId }
+        update(session)
+    }
 }
 

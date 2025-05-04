@@ -15,6 +15,7 @@ struct PlanSessionView: View {
     @State private var sessionName: String = ""
     @State private var startDate: Date = Date()
     @State private var endDate: Date = Date()
+    @State private var exercises: [Exercise] = []
     @State private var originalSessionName: String = ""
     @State private var originalStartDate: Date = Date()
     @State private var originalEndDate: Date = Date()
@@ -114,8 +115,13 @@ struct PlanSessionView: View {
                             .font(.subheadline)
                             .foregroundColor(.primary)
 
-                        if let session = SessionRepository().getById(by: sessionId), !session.exercises.isEmpty {
-                            ForEach(session.exercises, id: \.id) { exercise in
+                        if exercises.isEmpty {
+                            Text("No exercise")
+                                .font(.footnote)
+                                .foregroundColor(.gray)
+                                .padding(.bottom, 8)
+                        } else {
+                            ForEach(exercises, id: \.id) { exercise in
                                 GroupBox(label: Text(exercise.name).font(.headline)) {
                                     VStack(alignment: .leading, spacing: 4) {
                                         Text("\(exercise.type == .reps ? "Reps" : "Time"): \(exercise.count) / Sets: \(exercise.sets)")
@@ -123,13 +129,38 @@ struct PlanSessionView: View {
                                             .foregroundColor(.gray)
                                     }
                                     .padding(6)
+                                    
+                                    HStack {
+                                        NavigationLink(destination: PlanSessionNewExerciseView(sessionId: sessionId)) {
+                                            Text("View & Edit")
+                                                .font(.subheadline)
+                                                .bold()
+                                                .foregroundColor(.white)
+                                                .padding(.horizontal, 10)
+                                                .padding(.vertical, 4)
+                                                .background(Capsule().fill(Color.blueButton))
+                                        }
+
+                                        Spacer()
+                                        
+                                        Button(action: {
+                                            // Delete the exercise
+                                            SessionRepository().deleteExercise(sessionId: sessionId, exerciseId: exercise.id)
+                                            
+                                            // Directly update the exercises state after deletion
+                                            exercises.removeAll { $0.id == exercise.id }
+                                        }) {
+                                            Text("Delete")
+                                                .font(.subheadline)
+                                                .bold()
+                                                .foregroundColor(.white)
+                                                .padding(.horizontal, 10)
+                                                .padding(.vertical, 4)
+                                                .background(Capsule().fill(Color.red))
+                                        }
+                                    }
                                 }
                             }
-                        } else {
-                            Text("No exercise")
-                                .font(.footnote)
-                                .foregroundColor(.gray)
-                                .padding(.bottom, 8)
                         }
                     }
                 }
@@ -137,11 +168,10 @@ struct PlanSessionView: View {
                 .padding(.top)
             }
 
-            // Fixed bottom button
             VStack {
                 Divider()
 
-                NavigationLink(destination: PlanNewExerciseView(sessionId: sessionId)) {
+                NavigationLink(destination: PlanSessionNewExerciseView(sessionId: sessionId)) {
                     Text("Create a new exercise")
                         .font(.subheadline)
                         .bold()
@@ -179,6 +209,7 @@ struct PlanSessionView: View {
                 originalSessionName = sessionName
                 originalStartDate = startDate
                 originalEndDate = endDate
+                exercises = session.exercises
             }
         }
     }
@@ -191,3 +222,4 @@ struct PlanSessionView: View {
 #Preview {
     ContentView(selection: .plan)
 }
+
