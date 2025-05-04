@@ -16,7 +16,7 @@ struct Exercise: Codable {
     var guidanceImageURL: String
     var instruction: String
 
-    init(name: String, description: String, type: ExerciseType, count:Int, sets: Int, guidanceImageURL: String, instruction: String) {
+    init(name: String, type: ExerciseType, count:Int, sets: Int, guidanceImageURL: String, instruction: String) {
         self.id = UUID()
         self.name = name
         self.type = type

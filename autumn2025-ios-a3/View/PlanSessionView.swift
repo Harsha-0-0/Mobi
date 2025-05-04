@@ -22,93 +22,138 @@ struct PlanSessionView: View {
     @State private var isEndPickerVisible = false
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 20) {
-            // Session Name
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Session Name")
-                    .font(.subheadline)
-                    .foregroundColor(.primary)
-
-                TextField("Session Name", text: $sessionName)
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-            }
-
-            // Start Date
-            VStack(alignment: .leading, spacing: 6) {
-                Text("Start Date")
-                    .font(.subheadline)
-                    .foregroundColor(.primary)
-
-                Button(action: {
-                    withAnimation {
-                        isStartPickerVisible.toggle()
-                        isEndPickerVisible = false
-                    }
-                }) {
-                    HStack {
-                        Text(FormatterUtil.longDateFormatter.string(from: startDate))
+        VStack(spacing: 0) {
+            ScrollView {
+                VStack(alignment: .leading, spacing: 20) {
+                    // Session Name
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Session Name")
+                            .font(.subheadline)
                             .foregroundColor(.primary)
-                        Spacer()
-                        Image(systemName: "calendar")
-                            .foregroundColor(.gray)
+
+                        TextField("Session Name", text: $sessionName)
+                            .padding()
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                     }
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                }
 
-                if isStartPickerVisible {
-                    DatePicker("Select Start Date", selection: $startDate, displayedComponents: [.date])
-                        .datePickerStyle(.graphical)
-                        .onChange(of: startDate) { oldValue, newValue in
-                            startDate = newValue
-                            withAnimation {
-                                isStartPickerVisible = false
-                            }
-                        }
-                        .padding(.top, 5)
-                }
-            }
-
-            // End Date
-            VStack(alignment: .leading, spacing: 6) {
-                Text("End Date")
-                    .font(.subheadline)
-                    .foregroundColor(.primary)
-
-                Button(action: {
-                    withAnimation {
-                        isEndPickerVisible.toggle()
-                        isStartPickerVisible = false
-                    }
-                }) {
-                    HStack {
-                        Text(FormatterUtil.longDateFormatter.string(from: endDate))
+                    // Start Date
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Start Date")
+                            .font(.subheadline)
                             .foregroundColor(.primary)
-                        Spacer()
-                        Image(systemName: "calendar")
-                            .foregroundColor(.gray)
-                    }
-                    .padding()
-                    .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
-                }
 
-                if isEndPickerVisible {
-                    DatePicker("Select End Date", selection: $endDate, displayedComponents: [.date])
-                        .datePickerStyle(.graphical)
-                        .onChange(of: endDate) { oldValue, newValue in
-                            endDate = newValue
+                        Button(action: {
                             withAnimation {
+                                isStartPickerVisible.toggle()
                                 isEndPickerVisible = false
                             }
+                        }) {
+                            HStack {
+                                Text(FormatterUtil.longDateFormatter.string(from: startDate))
+                                    .foregroundColor(.primary)
+                                Spacer()
+                                Image(systemName: "calendar")
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
                         }
-                        .padding(.top, 5)
+
+                        if isStartPickerVisible {
+                            DatePicker("Select Start Date", selection: $startDate, displayedComponents: [.date])
+                                .datePickerStyle(.graphical)
+                                .onChange(of: startDate) { oldValue, newValue in
+                                    startDate = newValue
+                                    withAnimation {
+                                        isStartPickerVisible = false
+                                    }
+                                }
+                                .padding(.top, 5)
+                        }
+                    }
+
+                    // End Date
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("End Date (Your next physio appointment date)")
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+
+                        Button(action: {
+                            withAnimation {
+                                isEndPickerVisible.toggle()
+                                isStartPickerVisible = false
+                            }
+                        }) {
+                            HStack {
+                                Text(FormatterUtil.longDateFormatter.string(from: endDate))
+                                    .foregroundColor(.primary)
+                                Spacer()
+                                Image(systemName: "calendar")
+                                    .foregroundColor(.gray)
+                            }
+                            .padding()
+                            .overlay(RoundedRectangle(cornerRadius: 8).stroke(Color.gray, lineWidth: 1))
+                        }
+
+                        if isEndPickerVisible {
+                            DatePicker("Select End Date", selection: $endDate, displayedComponents: [.date])
+                                .datePickerStyle(.graphical)
+                                .onChange(of: endDate) { oldValue, newValue in
+                                    endDate = newValue
+                                    withAnimation {
+                                        isEndPickerVisible = false
+                                    }
+                                }
+                                .padding(.top, 5)
+                        }
+                    }
+
+                    // Exercise Section
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("Exercise")
+                            .font(.subheadline)
+                            .foregroundColor(.primary)
+
+                        if let session = SessionRepository().getById(by: sessionId), !session.exercises.isEmpty {
+                            ForEach(session.exercises, id: \.id) { exercise in
+                                GroupBox(label: Text(exercise.name).font(.headline)) {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text("\(exercise.type == .reps ? "Reps" : "Time"): \(exercise.count) / Sets: \(exercise.sets)")
+                                            .font(.footnote)
+                                            .foregroundColor(.gray)
+                                    }
+                                    .padding(6)
+                                }
+                            }
+                        } else {
+                            Text("No exercise")
+                                .font(.footnote)
+                                .foregroundColor(.gray)
+                                .padding(.bottom, 8)
+                        }
+                    }
                 }
+                .padding(.horizontal)
+                .padding(.top)
             }
 
-            Spacer()
+            // Fixed bottom button
+            VStack {
+                Divider()
+
+                NavigationLink(destination: PlanNewExerciseView(sessionId: sessionId)) {
+                    Text("Create a new exercise")
+                        .font(.subheadline)
+                        .bold()
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 100)
+                        .padding(.vertical, 10)
+                        .background(Capsule().fill(Color.blue))
+                }
+                .padding(.vertical)
+            }
+            .background(Color(.systemBackground))
         }
-        .padding()
         .navigationBarItems(trailing: Button(action: {
             if var session = SessionRepository().getById(by: sessionId) {
                 session.name = sessionName
@@ -121,30 +166,26 @@ struct PlanSessionView: View {
             Text("Save")
                 .font(.subheadline)
                 .bold()
-                .foregroundColor(isSaveEnabled ? .white : .gray)  // Change color based on whether the button is enabled
+                .foregroundColor(isSaveEnabled ? .white : .gray)
                 .padding(.horizontal, 20)
                 .padding(.vertical, 8)
-                .background(Capsule().fill(isSaveEnabled ? Color.blueButton : Color.gray.opacity(0.5)))  // Change background color based on whether the button is enabled
-                .frame(maxWidth: .infinity)
-                .disabled(!isSaveEnabled)  // Disable the button if no changes are made
+                .background(Capsule().fill(isSaveEnabled ? Color.blueButton : Color.gray.opacity(0.5)))
         })
         .onAppear {
             if let session = SessionRepository().getById(by: sessionId) {
                 sessionName = session.name
                 startDate = session.startDate
                 endDate = session.endDate
-                // Store original values for comparison
                 originalSessionName = sessionName
                 originalStartDate = startDate
                 originalEndDate = endDate
             }
         }
     }
-    
+
     private var isSaveEnabled: Bool {
         return sessionName != originalSessionName || startDate != originalStartDate || endDate != originalEndDate
     }
-
 }
 
 #Preview {

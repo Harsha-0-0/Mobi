@@ -59,5 +59,15 @@ class SessionRepository {
     func deleteAll() {
         userDefaults.removeObject(forKey: key)
     }
+    
+    func addExercise(to sessionId: UUID, exercise: Exercise) {
+        guard var session = getById(by: sessionId) else {
+            print("Session not found")
+            return
+        }
+
+        session.exercises.append(exercise)
+        update(session)
+    }
 }
 
