@@ -16,7 +16,6 @@ class SessionRepository {
     }
 
     func save(_ session: Session) {
-        print("save")
         var sessions = listAll()
         sessions.append(session)
         
@@ -69,7 +68,6 @@ class SessionRepository {
     
     func addExercise(to sessionId: UUID, exercise: Exercise) {
         guard var session = getById(by: sessionId) else {
-            print("Session not found")
             return
         }
 
@@ -79,7 +77,6 @@ class SessionRepository {
     
     func deleteExercise(sessionId: UUID, exerciseId: UUID) {
         guard var session = getById(by: sessionId) else {
-            print("Session not found")
             return
         }
         

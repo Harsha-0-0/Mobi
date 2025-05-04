@@ -22,6 +22,7 @@ struct PlanNewSessionView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Session Name")
                     .font(.subheadline)
+                    .bold()
                     .foregroundColor(.primary)
 
                 TextField("Session Name", text: $sessionName)
@@ -33,6 +34,7 @@ struct PlanNewSessionView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Start Date")
                     .font(.subheadline)
+                    .bold()
                     .foregroundColor(.primary)
 
                 Button(action: {
@@ -69,6 +71,7 @@ struct PlanNewSessionView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text("End Date")
                     .font(.subheadline)
+                    .bold()
                     .foregroundColor(.primary)
 
                 Button(action: {
