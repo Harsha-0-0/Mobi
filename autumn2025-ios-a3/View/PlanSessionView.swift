@@ -194,7 +194,7 @@ struct PlanSessionView: View {
                         .foregroundColor(.white)
                         .padding(.horizontal, 100)
                         .padding(.vertical, 10)
-                        .background(Capsule().fill(Color.blue))
+                        .background(Capsule().fill(Color.blueButton))
                 }
                 .padding(.vertical)
             }
