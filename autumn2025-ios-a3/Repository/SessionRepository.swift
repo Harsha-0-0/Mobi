@@ -60,6 +60,13 @@ class SessionRepository {
         userDefaults.removeObject(forKey: key)
     }
     
+    func getExerciseBySessionIdAndExerciseId(sessionId: UUID, exerciseId: UUID) -> Exercise? {
+        guard let session = getById(by: sessionId) else {
+            return nil
+        }
+        return session.exercises.first(where: { $0.id == exerciseId })
+    }
+    
     func addExercise(to sessionId: UUID, exercise: Exercise) {
         guard var session = getById(by: sessionId) else {
             print("Session not found")

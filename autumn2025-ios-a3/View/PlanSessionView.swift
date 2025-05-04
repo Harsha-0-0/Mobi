@@ -63,7 +63,7 @@ struct PlanSessionView: View {
                         if isStartPickerVisible {
                             DatePicker("Select Start Date", selection: $startDate, displayedComponents: [.date])
                                 .datePickerStyle(.graphical)
-                                .onChange(of: startDate) { oldValue, newValue in
+                                .onChange(of: startDate) { _, newValue in
                                     startDate = newValue
                                     withAnimation {
                                         isStartPickerVisible = false
@@ -75,7 +75,7 @@ struct PlanSessionView: View {
 
                     // End Date
                     VStack(alignment: .leading, spacing: 6) {
-                        Text("End Date (Your next physio appointment date)")
+                        Text("End Date")
                             .font(.subheadline)
                             .foregroundColor(.primary)
 
@@ -99,7 +99,7 @@ struct PlanSessionView: View {
                         if isEndPickerVisible {
                             DatePicker("Select End Date", selection: $endDate, displayedComponents: [.date])
                                 .datePickerStyle(.graphical)
-                                .onChange(of: endDate) { oldValue, newValue in
+                                .onChange(of: endDate) { _, newValue in
                                     endDate = newValue
                                     withAnimation {
                                         isEndPickerVisible = false
@@ -122,43 +122,56 @@ struct PlanSessionView: View {
                                 .padding(.bottom, 8)
                         } else {
                             ForEach(exercises, id: \.id) { exercise in
-                                GroupBox(label: Text(exercise.name).font(.headline)) {
-                                    VStack(alignment: .leading, spacing: 4) {
-                                        Text("\(exercise.type == .reps ? "Reps" : "Time"): \(exercise.count) / Sets: \(exercise.sets)")
-                                            .font(.footnote)
-                                            .foregroundColor(.gray)
-                                    }
-                                    .padding(6)
-                                    
-                                    HStack {
-                                        NavigationLink(destination: PlanSessionNewExerciseView(sessionId: sessionId)) {
-                                            Text("View & Edit")
-                                                .font(.subheadline)
-                                                .bold()
-                                                .foregroundColor(.white)
-                                                .padding(.horizontal, 10)
-                                                .padding(.vertical, 4)
-                                                .background(Capsule().fill(Color.blueButton))
+                                GroupBox(label:
+                                    Label(exercise.name, systemImage: "figure.walk")
+                                        .font(.headline)
+                                        .foregroundColor(.black)
+                                ) {
+                                    VStack(alignment: .leading, spacing: 8) {
+                                        HStack {
+                                            VStack(alignment: .leading, spacing: 2) {
+                                                Text(exercise.type == .reps ? "Reps: \(exercise.count)" : "Time: \(exercise.count)")
+                                                    .font(.footnote)
+                                                    .foregroundColor(.gray)
+
+                                                Text("Sets: \(exercise.sets)")
+                                                    .font(.footnote)
+                                                    .foregroundColor(.gray)
+                                            }
+
+                                            Spacer()
+
+                                            VStack(alignment: .trailing, spacing: 6) { 
+                                                NavigationLink(destination: PlanSessionExerciseView(sessionId: sessionId, exerciseId: exercise.id)) {
+                                                    Text("View & Edit")
+                                                        .font(.subheadline)
+                                                        .bold()
+                                                        .foregroundColor(.white)
+                                                        .padding(.horizontal, 10)
+                                                        .padding(.vertical, 4)
+                                                        .frame(width: 110)
+                                                        .background(Capsule().fill(Color.blueButton))
+                                                }
+
+
+                                                Button(action: {
+                                                    SessionRepository().deleteExercise(sessionId: sessionId, exerciseId: exercise.id)
+                                                    exercises.removeAll { $0.id == exercise.id }
+                                                }) {
+                                                    Text("Delete")
+                                                        .font(.subheadline)
+                                                        .bold()
+                                                        .foregroundColor(.white)
+                                                        .padding(.horizontal, 10)
+                                                        .padding(.vertical, 4)
+                                                        .frame(width: 110)
+                                                        .background(Capsule().fill(Color.red))
+                                                }
+                                            }
                                         }
 
-                                        Spacer()
-                                        
-                                        Button(action: {
-                                            // Delete the exercise
-                                            SessionRepository().deleteExercise(sessionId: sessionId, exerciseId: exercise.id)
-                                            
-                                            // Directly update the exercises state after deletion
-                                            exercises.removeAll { $0.id == exercise.id }
-                                        }) {
-                                            Text("Delete")
-                                                .font(.subheadline)
-                                                .bold()
-                                                .foregroundColor(.white)
-                                                .padding(.horizontal, 10)
-                                                .padding(.vertical, 4)
-                                                .background(Capsule().fill(Color.red))
-                                        }
                                     }
+                                    .padding(8)
                                 }
                             }
                         }
@@ -222,4 +235,3 @@ struct PlanSessionView: View {
 #Preview {
     ContentView(selection: .plan)
 }
-
