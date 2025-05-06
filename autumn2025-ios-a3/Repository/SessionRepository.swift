@@ -49,6 +49,21 @@ class SessionRepository {
         return sessions
     }
     
+    func getCurrentSession() -> Session? {
+        let now = Date()
+        return listAll().first(where: { $0.startDate <= now && now <= $0.endDate })
+    }
+
+    func getPastSessions() -> [Session] {
+        let now = Date()
+        return listAll().filter { $0.endDate < now }
+    }
+
+    func getUpcomingSessions() -> [Session] {
+        let now = Date()
+        return listAll().filter { $0.startDate > now }
+    }
+    
     func deleteById(sessionId: UUID) {
         var sessions = listAll()
         sessions.removeAll { $0.id == sessionId }
