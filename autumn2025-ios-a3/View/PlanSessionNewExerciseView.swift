@@ -19,6 +19,9 @@ struct PlanSessionNewExerciseView: View {
     @State private var timeInSeconds = 30
     @State private var videoURL = ""
     @State private var instructions = ""
+    
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -64,6 +67,12 @@ struct PlanSessionNewExerciseView: View {
         .padding()
         .navigationBarItems(trailing:
             Button(action: {
+                if exerciseName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    alertMessage = "Please enter an exercise name."
+                    showAlert = true
+                    return
+                }
+
                 let type: ExerciseType = isRepetitionBased ? .reps : .time
                 let count = isRepetitionBased ? reps : timeInSeconds
 
@@ -88,6 +97,9 @@ struct PlanSessionNewExerciseView: View {
                     .background(Capsule().fill(Color.blue))
             }
         )
+        .alert(alertMessage, isPresented: $showAlert) {
+            Button("OK", role: .cancel) {}
+        }
     }
 }
 

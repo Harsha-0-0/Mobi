@@ -20,9 +20,11 @@ struct PlanSessionExerciseView: View {
     @State private var timeInSeconds = 30
     @State private var videoURL = ""
     @State private var instructions = ""
-
-    // For detecting unsaved changes
     @State private var originalExercise: Exercise?
+
+    // Alert state
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -67,7 +69,14 @@ struct PlanSessionExerciseView: View {
         }
         .padding()
         .navigationBarItems(trailing:
-            Button(action: saveChanges) {
+            Button(action: {
+                if exerciseName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    alertMessage = "Please enter an exercise name."
+                    showAlert = true
+                    return
+                }
+                saveChanges()
+            }) {
                 Text("Save")
                     .font(.subheadline)
                     .bold()
@@ -78,6 +87,9 @@ struct PlanSessionExerciseView: View {
             }
             .disabled(!isSaveEnabled)
         )
+        .alert(alertMessage, isPresented: $showAlert) {
+            Button("OK", role: .cancel) {}
+        }
         .onAppear {
             loadExercise()
         }
@@ -118,7 +130,9 @@ struct PlanSessionExerciseView: View {
     }
 
     private var isSaveEnabled: Bool {
-        guard let original = originalExercise else { return false }
+        guard let original = originalExercise else {
+            return false
+        }
 
         let currentType: ExerciseType = isRepetitionBased ? .reps : .time
         let currentCount = isRepetitionBased ? reps : timeInSeconds
@@ -133,5 +147,5 @@ struct PlanSessionExerciseView: View {
 }
 
 #Preview {
-    PlanSessionExerciseView(sessionId: UUID(), exerciseId: UUID())
+    ContentView(selection: .plan)
 }
