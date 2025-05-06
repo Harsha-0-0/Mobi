@@ -110,7 +110,10 @@ class SessionRepository {
     
     func hasOverlappingSession(start: Date, end: Date) -> Bool {
         return listAll().contains { session in
-            return start <= session.endDate && end >= session.startDate
+            let calendar = Calendar.current
+            let startOfDay = calendar.startOfDay(for: start)
+            let endOfDay = calendar.date(byAdding: .day, value: 1, to: calendar.startOfDay(for: end))!
+            return startOfDay <= session.endDate && endOfDay >= session.startDate
         }
     }
 }
