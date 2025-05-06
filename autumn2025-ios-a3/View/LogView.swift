@@ -6,27 +6,24 @@
 //
 
 import SwiftUI
-
+//this is the log page with a calendar to view exercise logs for each day.
 struct LogView: View {
     @State private var date = Date()
     @State private var navigate = false
     var body: some View {
         NavigationStack {
             VStack(spacing: 24) {
-                
                 DatePicker(
                     "Pick a date",
                     selection: $date,
                     displayedComponents: .date)
-                
                 .datePickerStyle(.graphical)
                 .scaleEffect(1.1)
                 .frame(maxWidth: .infinity, maxHeight: 450)
                 .padding()
                 .background(Color(.systemBackground))
                 .cornerRadius(12)
-                
-                
+                //show the details for selected day in calendar
                 NavigationLink(destination: LogDetailView(date: date)) {
                     Text("View Log Details")
                         .font(.subheadline)
