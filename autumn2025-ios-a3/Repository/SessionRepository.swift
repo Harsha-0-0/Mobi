@@ -51,19 +51,28 @@ class SessionRepository {
     
     func getCurrentSession() -> Session? {
         let now = Date()
-        return listAll().first(where: { $0.startDate <= now && now <= $0.endDate })
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: now)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        return listAll().first(where: { $0.startDate <= endOfDay && $0.endDate >= startOfDay })
     }
+
 
     func getPastSessions() -> [Session] {
         let now = Date()
-        return listAll().filter { $0.endDate < now }
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: now)
+        return listAll().filter { $0.endDate < startOfDay }
     }
 
     func getUpcomingSessions() -> [Session] {
         let now = Date()
-        return listAll().filter { $0.startDate > now }
+        let calendar = Calendar.current
+        let startOfDay = calendar.startOfDay(for: now)
+        let endOfDay = calendar.date(byAdding: .day, value: 1, to: startOfDay)!
+        return listAll().filter { $0.startDate > endOfDay }
     }
-    
+
     func deleteById(sessionId: UUID) {
         var sessions = listAll()
         sessions.removeAll { $0.id == sessionId }
@@ -97,6 +106,12 @@ class SessionRepository {
         
         session.exercises.removeAll { $0.id == exerciseId }
         update(session)
+    }
+    
+    func hasOverlappingSession(start: Date, end: Date) -> Bool {
+        return listAll().contains { session in
+            return start <= session.endDate && end >= session.startDate
+        }
     }
 }
 

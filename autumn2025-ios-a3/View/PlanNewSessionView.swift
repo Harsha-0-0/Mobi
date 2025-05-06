@@ -14,6 +14,8 @@ struct PlanNewSessionView: View {
     @State private var endDate: Date = Date()
     @State private var isStartPickerVisible = false
     @State private var isEndPickerVisible = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -57,7 +59,7 @@ struct PlanNewSessionView: View {
                 if isStartPickerVisible {
                     DatePicker("Select Start Date", selection: $startDate, displayedComponents: [.date])
                         .datePickerStyle(.graphical)
-                        .onChange(of: startDate) { oldValue, newValue in
+                        .onChange(of: startDate) { _, newValue in
                             startDate = newValue
                             withAnimation {
                                 isStartPickerVisible = false
@@ -94,7 +96,7 @@ struct PlanNewSessionView: View {
                 if isEndPickerVisible {
                     DatePicker("Select End Date", selection: $endDate, displayedComponents: [.date])
                         .datePickerStyle(.graphical)
-                        .onChange(of: endDate) { oldValue, newValue in
+                        .onChange(of: endDate) { _, newValue in
                             endDate = newValue
                             withAnimation {
                                 isEndPickerVisible = false
@@ -106,9 +108,27 @@ struct PlanNewSessionView: View {
 
             // Create Button
             Button(action: {
+                if sessionName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                    alertMessage = "Please enter a session name."
+                    showAlert = true
+                    return
+                }
+
+                if endDate < startDate {
+                    alertMessage = "End date cannot be before start date."
+                    showAlert = true
+                    return
+                }
+                
+                if SessionRepository().hasOverlappingSession(start: startDate, end: endDate) {
+                    alertMessage = "This session overlaps with an existing one."
+                    showAlert = true
+                    return
+                }
+
                 let session = Session(name: sessionName, startDate: startDate, endDate: endDate, exercises: [])
                 SessionRepository().save(session)
-                presentationMode.wrappedValue.dismiss() // Return to PlanView
+                presentationMode.wrappedValue.dismiss()
             }) {
                 Text("Create a new session")
                     .font(.subheadline)
@@ -119,6 +139,9 @@ struct PlanNewSessionView: View {
                     .background(Capsule().fill(Color.blueButton))
                     .frame(maxWidth: .infinity)
                     .padding(.top, 16)
+            }
+            .alert(alertMessage, isPresented: $showAlert) {
+                Button("OK", role: .cancel) {}
             }
 
             Spacer()
