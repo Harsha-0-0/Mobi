@@ -21,6 +21,8 @@ struct PlanSessionView: View {
     @State private var originalEndDate: Date = Date()
     @State private var isStartPickerVisible = false
     @State private var isEndPickerVisible = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
 
     var body: some View {
         VStack(spacing: 0) {
@@ -112,7 +114,7 @@ struct PlanSessionView: View {
                         }
                     }
 
-                    // Exercise Section
+                    // Exercise Section (same as before)
                     VStack(alignment: .leading, spacing: 6) {
                         Text("Exercise")
                             .font(.subheadline)
@@ -144,7 +146,7 @@ struct PlanSessionView: View {
 
                                             Spacer()
 
-                                            VStack(alignment: .trailing, spacing: 6) { 
+                                            VStack(alignment: .trailing, spacing: 6) {
                                                 NavigationLink(destination: PlanSessionExerciseView(sessionId: sessionId, exerciseId: exercise.id)) {
                                                     Text("View & Edit")
                                                         .font(.subheadline)
@@ -155,7 +157,6 @@ struct PlanSessionView: View {
                                                         .frame(width: 110)
                                                         .background(Capsule().fill(Color.blueButton))
                                                 }
-
 
                                                 Button(action: {
                                                     SessionRepository().deleteExercise(sessionId: sessionId, exerciseId: exercise.id)
@@ -172,7 +173,6 @@ struct PlanSessionView: View {
                                                 }
                                             }
                                         }
-
                                     }
                                     .padding(8)
                                 }
@@ -201,6 +201,26 @@ struct PlanSessionView: View {
             .background(Color(.systemBackground))
         }
         .navigationBarItems(trailing: Button(action: {
+            // Validation checks
+            if sessionName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+                alertMessage = "Please enter a session name."
+                showAlert = true
+                return
+            }
+
+            if endDate < startDate {
+                alertMessage = "End date cannot be before start date."
+                showAlert = true
+                return
+            }
+
+            if SessionRepository().hasOverlappingSession(start: startDate, end: endDate) {
+                alertMessage = "This session overlaps with an existing one."
+                showAlert = true
+                return
+            }
+
+            // Save the session if everything is valid
             if var session = SessionRepository().getById(by: sessionId) {
                 session.name = sessionName
                 session.startDate = startDate
@@ -217,6 +237,9 @@ struct PlanSessionView: View {
                 .padding(.vertical, 8)
                 .background(Capsule().fill(isSaveEnabled ? Color.blueButton : Color.gray.opacity(0.5)))
         })
+        .alert(alertMessage, isPresented: $showAlert) {
+            Button("OK", role: .cancel) {}
+        }
         .onAppear {
             if let session = SessionRepository().getById(by: sessionId) {
                 sessionName = session.name
