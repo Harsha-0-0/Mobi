@@ -91,8 +91,10 @@ struct HomeView: View {
                     date: date,
                     sessionId: session.id,
                     exerciseId: exercise.id,
+                    exerciseName: exercise.name,
                     isDone: false,
                     setResults: [],
+                    totalSets: exercise.sets,
                     overallFeedback: nil
                 )
             }
@@ -114,8 +116,10 @@ struct HomeView: View {
                         date: date,
                         sessionId: session.id,
                         exerciseId: exercise.id,
+                        exerciseName: exercise.name,
                         isDone: false,
                         setResults: [],
+                        totalSets: exercise.sets,
                         overallFeedback: nil
                     )
                     updatedRecords.append(newRecord)

@@ -70,11 +70,17 @@ struct UnfinishedSetSheet: View {
                 },
                 trailing: Button("Save") {
                     var updatedRecord = record
-                    
+                    var setsCompleted: Int = 0
+                    for result in updatedRecord.setResults {
+                        if result.isCompleted {
+                            setsCompleted += 1
+                        }
+                    }
                     let newSetResult = SetResult(
                         setNumber: setNumber,
                         isCompleted: false,
                         actualValue: actualValue,
+                        setsCompleted: setsCompleted,
                         note: note.isEmpty ? nil : note
                     )
                     
@@ -94,8 +100,10 @@ struct UnfinishedSetSheet: View {
             date: Date(),
             sessionId: UUID(),
             exerciseId: UUID(),
+            exerciseName: "test",
             isDone: false,
-            setResults: []
+            setResults: [],
+            totalSets: 3
         ),
         setNumber: 1
     ) { updatedRecord in

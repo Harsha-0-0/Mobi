@@ -12,8 +12,10 @@ struct ExerciseRecord: Identifiable, Codable {
     var date: Date
     var sessionId: UUID
     var exerciseId: UUID
+    var exerciseName: String
     var isDone: Bool
     var setResults: [SetResult]
+    var totalSets: Int
     var overallFeedback: ExerciseFeedback?
 }
 
@@ -22,6 +24,7 @@ struct SetResult: Identifiable, Codable {
     var setNumber: Int
     var isCompleted: Bool
     var actualValue: Int
+    var setsCompleted: Int
     var note: String?
 }
 
