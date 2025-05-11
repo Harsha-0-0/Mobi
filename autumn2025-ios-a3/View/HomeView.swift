@@ -65,7 +65,9 @@ struct HomeView: View {
     }
     
     func loadData() {
-        sessions = SessionRepository().listAll()
+        if let currentSession = SessionRepository().getCurrentSession() {
+            sessions = [currentSession]
+        }
         let today = Calendar.current.startOfDay(for: Date())
         
         var records = ExerciseRecordRepository().listByDate(today)
